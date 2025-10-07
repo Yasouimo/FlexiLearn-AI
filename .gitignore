@@ -6,9 +6,8 @@ ENV/
 env.bak/
 venv.bak/
 
-# Streamlit secrets (keep config.toml)
-.streamlit/secrets.toml
-.streamlit/credentials.toml
+# Streamlit (ignore entire folder)
+.streamlit/
 
 # Python
 __pycache__/
@@ -65,7 +64,6 @@ venv.bak/
 *.swp
 *.swo
 *~
-.DS_Store
 
 # Data files
 *.csv
