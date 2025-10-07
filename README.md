@@ -1,6 +1,6 @@
 # 🧠 FlexiLearn AI Playground
 
-**A No-Code Machine Learning & Deep Learning Platform**
+**A No-Code Machine Learning & Deep Learning Platform** 
 
 FlexiLearn AI is an interactive Streamlit application that empowers users to train, evaluate, and compare both classical machine learning and deep learning models—all through an intuitive web interface. Whether you're working with tabular data or images, FlexiLearn AI provides guided workflows, flexible architecture builders, and comprehensive visualizations to make AI accessible to everyone.
 
