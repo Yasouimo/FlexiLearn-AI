@@ -74,8 +74,8 @@ data/
 datasets/
 uploads/
 
-# Model files
-models/
+# Trained model files (not source code!)
+saved_models/
 *.pkl
 *.h5
 *.onnx
