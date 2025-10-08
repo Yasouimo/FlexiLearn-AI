@@ -21,6 +21,7 @@ FlexiLearn AI is an interactive Streamlit application that empowers users to tra
 - **Rich Visualizations**: Confusion matrices, ROC curves, training histories, and more
 - **Model Comparison**: Track and compare multiple training runs side-by-side
 - **Export Trained Models**: Download models (.pkl for Scikit-learn, .pth for PyTorch)
+- **Modular Architecture**: Clean, organized codebase split into logical components
 
 ---
 
@@ -35,17 +36,61 @@ FlexiLearn AI is an interactive Streamlit application that empowers users to tra
 
 1. **Clone or download this repository**
 
-2. **Install dependencies**:
+2. **Navigate to the project directory**:
+   ```bash
+   cd Streamlit_app_deep
+   ```
+
+3. **Create a virtual environment** (recommended):
+   ```bash
+   # Windows
+   python -m venv .venv
+   .venv\Scripts\activate
+
+   # macOS/Linux
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+4. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Launch the application**:
+5. **Launch the application**:
    ```bash
-   python -m streamlit run app.py
+   # From the Streamlit_app_deep directory
+   python -m streamlit run src/app.py
    ```
 
-4. **Open your browser** to the URL shown in the terminal (typically `http://localhost:8501`)
+6. **Open your browser** to the URL shown in the terminal (typically `http://localhost:8501`)
+
+### Project Structure
+
+```
+Streamlit_app_deep/
+├── .streamlit/
+│   └── config.toml              # Streamlit configuration (500MB upload limit)
+├── src/
+│   ├── app.py                   # Main application (47 lines - orchestration only)
+│   ├── ui/                      # User interface components
+│   │   ├── sidebar.py           # Sidebar configuration and data selection
+│   │   ├── data_preview.py      # Data preview and preprocessing
+│   │   ├── model_configuration.py  # Model building and training
+│   │   └── results_display.py   # Results visualization and export
+│   ├── models/
+│   │   └── custom_datasets.py   # Custom PyTorch datasets (ImageZipDataset)
+│   ├── evaluation/
+│   │   └── visualization.py     # Plotting functions (confusion matrix, ROC, etc.)
+│   └── utils/
+│       ├── session_state.py     # Session state initialization
+│       ├── export_utils.py      # Model export utilities
+│       └── data_loaders.py      # Data loading helpers
+├── requirements.txt
+└── README.md
+```
+
+
 
 ---
 
@@ -64,6 +109,7 @@ The sidebar is your command center. Start by selecting your data source:
 - Supported formats: `.csv`, `.xlsx`, `.txt`
 - Your data should have features in columns and one target column
 - Example: A CSV with customer data and a "purchased" column for classification, or house features with a "price" column for regression
+- **Max file size**: 500MB
 
 **For Image Data (Classification)**:
 - Supported format: `.zip` files
@@ -77,6 +123,7 @@ The sidebar is your command center. Start by selecting your data source:
   │   ├── dog001.jpg
   │   ├── dog002.jpg
   ```
+- **Max file size**: 500MB
 
 #### Option B: Use Classic Datasets
 
@@ -736,3 +783,57 @@ model.eval()
 with torch.no_grad():
     predictions = model(new_data_tensor)
 ```
+
+---
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+**"Module not found" errors**:
+- Make sure you're running from the correct directory: `Streamlit_app_deep/`
+- Ensure virtual environment is activated
+- Reinstall dependencies: `pip install -r requirements.txt`
+
+**Upload fails or file too large**:
+- Check `.streamlit/config.toml` for `maxUploadSize` setting
+- Default is 500MB - you can increase this if needed
+
+**Training is very slow**:
+- Reduce batch size if using GPU
+- Reduce image size for image datasets
+- Use fewer epochs for initial experiments
+- Consider using Classical ML models for quick baselines
+
+**Model overfitting (validation accuracy much lower than training)**:
+- Add more dropout layers
+- Reduce model complexity (fewer layers/neurons)
+- Get more training data
+- Use data augmentation (for images)
+
+**Loss becomes NaN during training**:
+- Reduce learning rate (try 0.0001 or 0.00001)
+- Check for data normalization issues
+- Reduce model complexity
+
+---
+
+## 📄 License
+
+This project is open-source and available under the MIT License.
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+
+---
+
+## 👨‍💻 Author
+
+Built with ❤️ for the AI and ML community
+
+---
+
+**Happy Learning! 🚀**
