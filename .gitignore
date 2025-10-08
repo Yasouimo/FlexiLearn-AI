@@ -6,8 +6,8 @@ ENV/
 env.bak/
 venv.bak/
 
-# Streamlit (ignore entire folder)
-.streamlit/
+# Streamlit secrets only (keep config.toml in repo)
+.streamlit/secrets.toml
 
 # Python
 __pycache__/

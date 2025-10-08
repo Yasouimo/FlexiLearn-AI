@@ -1,0 +1,12 @@
+[server]
+maxUploadSize = 500
+
+[theme]
+# Only set primary color, let Streamlit handle light/dark mode switching
+primaryColor = "#FF6B6B"
+font = "sans serif"
+
+# Leave these commented out to enable theme toggle in Settings menu
+# backgroundColor = "#FFFFFF"
+# secondaryBackgroundColor = "#F0F2F6"
+# textColor = "#262730"
