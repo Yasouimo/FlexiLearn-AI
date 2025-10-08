@@ -65,15 +65,6 @@ venv.bak/
 *.swo
 *~
 
-# Data files
-*.csv
-*.xlsx
-*.xls
-*.zip
-data/
-datasets/
-uploads/
-
 # Trained model files (not source code!)
 saved_models/
 *.pkl
@@ -91,3 +82,6 @@ Thumbs.db
 # Project specific
 PROMPT.md
 app_original.py
+
+# User uploads (runtime only, not sample data)
+uploads/
