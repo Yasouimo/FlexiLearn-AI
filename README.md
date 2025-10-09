@@ -818,21 +818,10 @@ with torch.no_grad():
 
 ---
 
-## 📄 License
-
-This project is open-source and available under the MIT License.
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
-
----
 
 ## 👨‍💻 Author
 
-Built with ❤️ for the AI and ML community
+Built By **BELLMIR Yahya** 
 
 ---
 
