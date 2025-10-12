@@ -1,4 +1,4 @@
-# 🧠 FlexiLearn AI Playground 
+# 🧠 FlexiLearn AI Playground
 
 **A No-Code Machine Learning & Deep Learning Platform** 
 
