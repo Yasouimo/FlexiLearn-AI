@@ -1,3 +1,7 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Hide INFO messages (0=all, 1=filter INFO, 2=filter WARNING, 3=filter ERROR)
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN (optional, might be slower)
+
 import streamlit as st
 from ui.sidebar import show_sidebar
 from ui.data_preview import show_data_preview
@@ -37,8 +41,15 @@ else:
     show_data_preview(uploaded_file, df, data_type, problem_type)
     
     # Step 2: Model Configuration & Training
-    if 'data' in st.session_state:
-        show_model_configuration(data_type, problem_type, model_family)
+    # For time series, we need df in session state; for others, we need processed 'data'
+    if data_type == "Time Series":
+        # Time series uses df directly, show config if df is available
+        if df is not None or 'df' in st.session_state:
+            show_model_configuration(data_type, problem_type, model_family)
+    else:
+        # Classical ML and Deep Learning need processed data
+        if 'data' in st.session_state:
+            show_model_configuration(data_type, problem_type, model_family)
     
     # Step 3: Results & Evaluation
     if st.session_state.runs:

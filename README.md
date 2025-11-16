@@ -11,16 +11,18 @@ FlexiLearn AI is an interactive Streamlit application that empowers users to tra
 
 ## 🌟 Key Features
 
-- **Dual Data Support**: Work with tabular data (CSV/Excel) or image datasets (ZIP archives)
-- **Two Problem Types**: Classification and Regression for tabular data
-- **Two Model Families**:
+- **Triple Data Support**: Work with tabular data (CSV/Excel), image datasets (ZIP archives), or time series data
+- **Three Problem Types**: Classification and Regression for tabular data, Forecasting for time series
+- **Three Model Families**:
   - **Classical ML** (Scikit-learn): Logistic Regression, Random Forest, SVM, KNN, Decision Trees
   - **Deep Learning** (PyTorch): Custom ANNs for tabular data, CNNs for images
+  - **RNN (Keras/TensorFlow)**: LSTM, GRU, and Simple RNN for time series forecasting
 - **Automated Preprocessing**: One-click data preparation with smart defaults
 - **Interactive Architecture Builder**: Design neural networks layer-by-layer with real-time feedback
-- **Rich Visualizations**: Confusion matrices, ROC curves, training histories, and more
+- **Time Series Analysis**: Seasonal decomposition, trend analysis, and synthetic data generation
+- **Rich Visualizations**: Confusion matrices, ROC curves, training histories, loss curves, and forecast plots
 - **Model Comparison**: Track and compare multiple training runs side-by-side
-- **Export Trained Models**: Download models (.pkl for Scikit-learn, .pth for PyTorch)
+- **Export Trained Models**: Download models (.pkl for Scikit-learn, .pth for PyTorch, .keras for RNN)
 - **Modular Architecture**: Clean, organized codebase split into logical components
 
 ---
@@ -125,6 +127,12 @@ The sidebar is your command center. Start by selecting your data source:
   ```
 - **Max file size**: 500MB
 
+**For Time Series Data (Forecasting)**:
+- Supported formats: `.csv`, `.xlsx`
+- Data should have a date/time column and one or more value columns
+- Example: Daily sales data with columns: `Date`, `Sales`
+- **Max file size**: 500MB
+
 #### Option B: Use Classic Datasets
 
 Perfect for learning and experimentation:
@@ -133,6 +141,16 @@ Perfect for learning and experimentation:
 
 ![Classic Dataset](docs/Screenshot%202025-10-07%20211354.png)
 *Loading the Iris dataset for quick experimentation*
+
+#### Option C: Generate Synthetic Time Series
+
+Perfect for time series forecasting experiments:
+- **Synthetic Sales Data**: Automatically generated daily sales with trend, seasonality, and noise
+- Customizable length (1-5 years of data)
+- Ideal for testing RNN models
+
+![Synthetic Time Series](docs/RNN_1.png)
+*Synthetic sales data with trend and seasonal patterns for forecasting experiments*
 
 ---
 
@@ -171,7 +189,18 @@ Perfect for learning and experimentation:
    - Create train/test splits
    - Display sample images from your dataset
 
+#### For Time Series Data
 
+![Time Series Preview](docs/RNN_1.png)
+*Time series visualization with seasonal decomposition analysis*
+
+1. **View Time Series Plot**: See your data over time
+2. **Seasonal Decomposition**: Break down the series into:
+   - **Trend**: Long-term direction
+   - **Seasonality**: Repeating patterns
+   - **Residual**: Random noise
+3. Choose decomposition model (Additive or Multiplicative)
+4. The app automatically detects patterns to help you understand your data
 
 ---
 
@@ -658,6 +687,68 @@ Epoch 3/20: Loss: nan | Val Loss: nan      ← Exploded!
 
 ---
 
+##### For Time Series: Recurrent Neural Networks (RNNs)
+
+RNNs are specialized for sequential data like time series. They have "memory" that helps them learn patterns over time.
+
+**Understanding RNN Types**:
+
+1. **Simple RNN**: Basic recurrent network
+   - ✅ Fast training
+   - ✅ Good for short sequences
+   - ❌ Struggles with long-term patterns
+   - Use for: Quick experiments, simple patterns
+
+2. **LSTM (Long Short-Term Memory)**: Most popular for time series
+   - ✅ Excellent at remembering long-term patterns
+   - ✅ Handles complex dependencies
+   - ✅ Industry standard for forecasting
+   - Use for: Most time series problems (recommended!)
+
+3. **GRU (Gated Recurrent Unit)**: Faster alternative to LSTM
+   - ✅ Faster training than LSTM
+   - ✅ Similar performance to LSTM
+   - ✅ Fewer parameters
+   - Use for: When speed matters
+
+**Architecture Modes**:
+
+**Suggested Mode** (Recommended):
+- Pre-configured LSTM with proven settings
+- 2 layers, 64 units each
+- Optimized learning rate and batch size
+- Just click train!
+
+![RNN Suggested Architecture](docs/RNN_3.png)
+*Suggested RNN architecture with optimal settings for time series forecasting*
+
+**Custom Mode**:
+Build your own RNN with control over:
+- **Window Size**: How many past time steps to use (e.g., use last 30 days to predict tomorrow)
+- **Number of Layers**: Stack multiple RNN layers (1-5)
+- **Units**: Neurons per layer (16-256)
+- **Training Parameters**: Epochs, batch size, optimizer, learning rate
+
+**Key Parameters**:
+
+- **Window Size (Lookback)**: 
+  - Small (5-10): For rapidly changing data
+  - Medium (30): Good default for daily data
+  - Large (100+): For yearly seasonal patterns
+
+- **Train/Test Split**: Reserve 20% for testing by default
+
+**Training Tips**:
+- Start with suggested settings
+- LSTM is usually the best choice
+- If training is slow, try GRU
+- Watch for overfitting (test loss increasing while training loss decreases)
+
+![RNN Training Results](docs/RNN_4.png)
+*Training progress and performance metrics for RNN forecasting model*
+
+---
+
 ### Step 4: Evaluation & Results
 
 After training, navigate to **Step 3: Evaluation & Comparison** to analyze your models.
@@ -740,6 +831,29 @@ Select any run to see in-depth analysis:
   - Less sensitive to outliers than MSE
   - Same units as target
 
+**For Forecasting Models (RNN)**:
+
+Three interactive tabs for comprehensive analysis:
+
+**📉 Loss Curves Tab**:
+- Training & validation loss over epochs
+- Mean Absolute Error (MAE) progression
+- Check for overfitting (gap between train/val)
+
+**📊 Predictions Tab**:
+- Full timeline with original data
+- Training predictions (green)
+- Test predictions (red dashed)
+- Zoomed view of test period
+- Visual split between train/test data
+
+**📈 Metrics Tab**:
+- **RMSE** (Root Mean Squared Error): Lower is better
+- **MAE** (Mean Absolute Error): Average prediction error
+- **R² Score**: How well the model fits (closer to 1.0 is better)
+- Error distribution histogram
+- Separate metrics for training and test sets
+
 ---
 
 ### Step 5: Export Your Model
@@ -752,6 +866,7 @@ Once you've found your best model:
 4. Save the file to your local machine:
    - **`.pkl`** for Classical ML models (Scikit-learn)
    - **`.pth`** for Deep Learning models (PyTorch state dict)
+   - **`.keras`** for RNN models (Keras/TensorFlow)
 
 **Using Your Exported Model**:
 
@@ -782,6 +897,19 @@ model.eval()
 # Make predictions
 with torch.no_grad():
     predictions = model(new_data_tensor)
+```
+
+**RNN (Keras/TensorFlow)**:
+```python
+from keras.models import load_model
+import numpy as np
+
+# Load the model
+model = load_model('rnn_model.keras')
+
+# Prepare your data (scale and create sequences)
+# predictions = model.predict(scaled_sequences)
+# Then inverse transform to get actual values
 ```
 
 ---

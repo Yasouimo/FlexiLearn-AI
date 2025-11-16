@@ -3,6 +3,7 @@
 import streamlit as st
 import pandas as pd
 from sklearn.datasets import load_iris, fetch_california_housing
+from utils.timeseries_utils import generate_synthetic_sales_data
 
 def show_architecture_guide(data_type, problem_type):
     """Show architecture guide in sidebar"""
@@ -39,50 +40,97 @@ def show_sidebar():
     st.sidebar.markdown("Your personal ML/DL playground. 🚀")
 
     st.sidebar.header("1. Choose Your Data")
-    data_source = st.sidebar.selectbox("Data Source", ["Upload File", "Load Classic Dataset"])
+    data_source = st.sidebar.selectbox("Data Source", ["Upload File", "Load Classic Dataset", "Generate Synthetic Time Series"])
 
     uploaded_file, df = None, None
     data_type = None
     
     if data_source == "Upload File":
-        data_type = st.sidebar.selectbox("Data Type", ("Tabular (CSV/Excel)", "Image (ZIP)"))
-        if data_type == "Tabular (CSV/Excel)":
+        data_type = st.sidebar.selectbox("Data Type", ("Tabular (CSV/Excel)", "Image (ZIP)", "Time Series"))
+        
+        if data_type == "Time Series":
+            allowed_types = ['csv', 'xlsx']
+            st.sidebar.info("📁 Max file size: 500MB")
+            uploaded_file = st.sidebar.file_uploader("Upload your time series file", type=allowed_types)
+            
+            if uploaded_file:
+                try:
+                    if uploaded_file.name.endswith('.csv'):
+                        df = pd.read_csv(uploaded_file)
+                    else:
+                        df = pd.read_excel(uploaded_file)
+                    
+                    # Let user select date and target columns
+                    st.sidebar.subheader("Column Selection")
+                    date_col = st.sidebar.selectbox("Date Column", df.columns)
+                    target_col = st.sidebar.selectbox("Target Column", df.columns, index=1 if len(df.columns) > 1 else 0)
+                    
+                    # Convert to datetime and set as index
+                    df[date_col] = pd.to_datetime(df[date_col])
+                    df.set_index(date_col, inplace=True)
+                    df = df[[target_col]]  # Keep only target column
+                    # Store in session state for RNN training
+                    st.session_state.df = df
+
+                except Exception as e:
+                    st.sidebar.error(f"Error reading file: {e}")
+        
+        elif data_type == "Tabular (CSV/Excel)":
             allowed_types = ['csv', 'xlsx', 'txt']
+            st.sidebar.info("📁 Max file size: 500MB")
+            uploaded_file = st.sidebar.file_uploader("Upload your file", type=allowed_types)
         else:
-            allowed_types = ['zip', 'tgz']
-        uploaded_file = st.sidebar.file_uploader("Upload your file", type=allowed_types)
-    else:
-        dataset_name = st.sidebar.selectbox("Choose a classic dataset", ["Iris (Classification)", "California Housing (Regression)"])
-        data_type = "Tabular (CSV/Excel)"
-        if dataset_name == "Iris (Classification)":
-            data = load_iris()
-            df = pd.DataFrame(data.data, columns=data.feature_names)
-            df['target'] = data.target
-        else:
-            data = fetch_california_housing()
-            df = pd.DataFrame(data.data, columns=data.feature_names)
-            df['target'] = data.target
-
-    st.sidebar.header("2. Configure Your Model")
-    if data_type == "Tabular (CSV/Excel)":
-        problem_type = st.sidebar.selectbox("Problem Type", ("Classification", "Regression"))
-    else:
-        problem_type = "Classification"
+            allowed_types = ['zip']
+            st.sidebar.info("📁 Max file size: 500MB")
+            uploaded_file = st.sidebar.file_uploader("Upload your file", type=allowed_types)
     
-    model_family = st.sidebar.selectbox("Model Family", ("Classical ML (Scikit-learn)", "Deep Learning (PyTorch)"))
+    elif data_source == "Generate Synthetic Time Series":
+        st.sidebar.success("Generating synthetic sales data...")
+        num_points = st.sidebar.slider("Number of Days", 365, 365*5, 365*3)
+        df = generate_synthetic_sales_data(num_points)
+        data_type = "Time Series"
+        st.sidebar.info(f"Generated {len(df)} days of synthetic sales data")
+        # Store in session state for RNN training
+        st.session_state.df = df
+    
+    else:  # Load Classic Dataset
+        dataset_name = st.sidebar.selectbox("Choose Dataset", ("Iris (Classification)", "California Housing (Regression)"))
+        if dataset_name == "Iris (Classification)":
+            iris = load_iris()
+            df = pd.DataFrame(iris.data, columns=iris.feature_names)
+            df['species'] = iris.target
+            data_type = "Tabular (CSV/Excel)"
+        else:
+            housing = fetch_california_housing()
+            df = pd.DataFrame(housing.data, columns=housing.feature_names)
+            df['price'] = housing.target
+            data_type = "Tabular (CSV/Excel)"
 
-    st.sidebar.header("Actions")
-    if st.sidebar.button("🗑️ Start New Session"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+    # Problem Type Selection
+    st.sidebar.header("2. Define Your Problem")
+    if data_type == "Time Series":
+        problem_type = "Forecasting"
+        st.sidebar.info("Time Series → Forecasting")
+    elif data_type == "Image (ZIP)":
+        problem_type = "Classification"
+        st.sidebar.info("Images → Classification Only")
+    else:
+        problem_type = st.sidebar.selectbox("Problem Type", ("Classification", "Regression"))
+
+    # Model Family Selection
+    st.sidebar.header("3. Choose Model Family")
+    if data_type == "Time Series":
+        model_family = st.sidebar.selectbox("Model Family", ("RNN (Recurrent Neural Networks)",))
+    elif data_type == "Tabular (CSV/Excel)":
+        model_family = st.sidebar.selectbox("Model Family", ("Classical ML (Scikit-learn)", "Deep Learning (PyTorch)"))
+    else:
+        model_family = "Deep Learning (PyTorch)"
+        st.sidebar.info("Images → Deep Learning (CNNs)")
 
     return {
-        'data_source': data_source,
-        'data_type': data_type,
         'uploaded_file': uploaded_file,
         'df': df,
+        'data_type': data_type,
         'problem_type': problem_type,
-        'model_family': model_family,
-        'show_architecture_guide': show_architecture_guide
+        'model_family': model_family
     }
