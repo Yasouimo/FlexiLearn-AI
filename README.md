@@ -96,6 +96,7 @@ src/
    - California Housing (Regression)
 
 ![Classic Dataset](docs/Screenshot%202025-10-07%20211354.png)
+
 *Built-in datasets for quick testing*
 
 3. **Generate Synthetic Time Series**
@@ -150,6 +151,7 @@ Choose from Logistic Regression, Random Forest, SVM, KNN, or Decision Trees. Adj
 - **Custom Mode**: Build your own network layer by layer
 
 ![Architecture Guide](docs/Screenshot%202025-10-07%20212132.png)
+
 *Architecture Guide provides real-time tips for building your network*
 
 **For Tabular Data (ANNs):**
@@ -162,6 +164,7 @@ Add Dense layers with neurons, activation functions (ReLU recommended), and drop
 **For Image Data (CNNs):**
 
 ![Custom CNN Builder](docs/Screenshot%202025-10-07%20211846.png)
+
 *Build CNNs with convolutional and pooling layers*
 
 CNNs learn spatial patterns in images. Add Conv2d layers (filters, kernel size) and MaxPool2d layers for downsampling. The network automatically flattens and adds dense layers for classification.
