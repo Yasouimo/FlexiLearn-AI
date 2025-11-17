@@ -81,6 +81,7 @@ src/
 ### Step 1: Choose Your Data
 
 ![Data Upload](docs/Screenshot%202025-10-07%20211330.png)
+
 *Choose your data source from the sidebar*
 
 **Three Options:**
