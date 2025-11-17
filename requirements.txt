@@ -10,3 +10,7 @@ Pillow
 openpyxl
 pyvis
 streamlit-agraph
+plotly
+statsmodels
+tensorflow
+keras
