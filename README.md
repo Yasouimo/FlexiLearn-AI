@@ -265,7 +265,7 @@ predictions = model.predict(scaled_sequences)
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Author 
 
 Built By **BELLMIR Yahya** 
 
